@@ -55,7 +55,7 @@ subprojects {
     compileJava.inputs.files(processResources)
 }
 
-project(':trello-spring-boot-starter') {
+project(':trello-library') {
 
     dependencies {
 
@@ -71,7 +71,7 @@ project(':discord-service') {
     }
 
     dependencies {
-        implementation project(':trello-spring-boot-starter')
+        implementation project(':trello-library')
         implementation('com.discord4j:discord4j-core:3.1.3')
     }
 }
