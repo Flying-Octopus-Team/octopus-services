@@ -1,0 +1,5 @@
+discord:
+  token: DISCORD_BOT_TOKEN
+
+trello:
+  token: foo

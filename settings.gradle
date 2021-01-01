@@ -1,0 +1,1 @@
+include 'discord-service', 'trello-spring-boot-starter'

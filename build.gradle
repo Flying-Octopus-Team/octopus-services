@@ -1,0 +1,77 @@
+buildscript {
+    ext {
+        springBootVersion = '2.4.1'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        }
+    }
+
+    dependencies {
+        // spring boot
+        implementation('org.springframework.boot:spring-boot-starter-webflux')
+        annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')
+
+
+        //test
+        testImplementation('io.projectreactor:reactor-test')
+        testImplementation('org.springframework.boot:spring-boot-starter-test')
+
+        // lombok
+        compileOnly('org.projectlombok:lombok')
+        annotationProcessor('org.projectlombok:lombok')
+        testCompileOnly('org.projectlombok:lombok')
+        testAnnotationProcessor('org.projectlombok:lombok')
+
+    }
+
+    sourceCompatibility = '11'
+
+    ext {
+        projectName = "$project.name"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    compileJava.inputs.files(processResources)
+}
+
+project(':trello-spring-boot-starter') {
+
+    dependencies {
+
+    }
+}
+
+project(':discord-service') {
+
+    apply plugin: 'org.springframework.boot'
+
+    springBoot {
+        mainClassName = 'pl.flyingoctopus.discord.DiscordServiceApplication'
+    }
+
+    dependencies {
+        implementation project(':trello-spring-boot-starter')
+        implementation('com.discord4j:discord4j-core:3.1.3')
+    }
+}
