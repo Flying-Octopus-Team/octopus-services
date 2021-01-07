@@ -1,6 +1,7 @@
 buildscript {
     ext {
         springBootVersion = '2.4.1'
+        testcontainersVersion = '1.15.1'
     }
     repositories {
         mavenCentral()
@@ -11,8 +12,9 @@ buildscript {
 }
 
 subprojects {
-    apply plugin: 'java-library'
+    apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'groovy'
 
     repositories {
         mavenCentral()
@@ -32,14 +34,21 @@ subprojects {
 
         //test
         testImplementation('io.projectreactor:reactor-test')
-        testImplementation('org.springframework.boot:spring-boot-starter-test')
+        implementation 'org.codehaus.groovy:groovy:3.0.7'
+        testImplementation('org.spockframework:spock-core:2.0-M3-groovy-3.0')
+        testImplementation('org.spockframework:spock-spring:2.0-M3-groovy-3.0')
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        }
+
+        testRuntimeOnly "net.bytebuddy:byte-buddy:1.10.10"
+        testRuntimeOnly "org.objenesis:objenesis:3.1"
 
         // lombok
         compileOnly('org.projectlombok:lombok')
         annotationProcessor('org.projectlombok:lombok')
         testCompileOnly('org.projectlombok:lombok')
         testAnnotationProcessor('org.projectlombok:lombok')
-
     }
 
     sourceCompatibility = '11'
@@ -50,15 +59,15 @@ subprojects {
 
     test {
         useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
     }
-
-    compileJava.inputs.files(processResources)
 }
 
 project(':trello-library') {
 
     dependencies {
-
     }
 }
 
@@ -72,6 +81,26 @@ project(':discord-service') {
 
     dependencies {
         implementation project(':trello-library')
+
+        // discord
         implementation('com.discord4j:discord4j-core:3.1.3')
+
+        // database
+        implementation('org.springframework.boot:spring-boot-starter-data-r2dbc')
+        runtimeOnly('io.r2dbc:r2dbc-postgresql')
+        runtimeOnly('org.postgresql:postgresql')
+        runtimeOnly('com.h2database:h2')
+        runtimeOnly('io.r2dbc:r2dbc-h2')
+
+        // test
+        testImplementation('org.testcontainers:postgresql')
+        testImplementation('org.testcontainers:r2dbc')
+        testImplementation('org.testcontainers:spock')
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+        }
     }
 }

@@ -4,12 +4,11 @@ import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.Event;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.flyingoctopus.discord.listener.EventListener;
-import pl.flyingoctopus.trello.configuration.TrelloProperties;
 
 import java.util.List;
 import java.util.Objects;
@@ -20,9 +19,9 @@ import java.util.Objects;
 public class DiscordClientConfiguration {
 
     private final DiscordProperties properties;
-    private final TrelloProperties trelloProperties;
 
     @Bean
+    @ConditionalOnProperty(prefix = "discord", name = "enabled")
     public <T extends Event> GatewayDiscordClient gatewayDiscordClient(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") List<EventListener<T>> eventListeners) {
         var client = DiscordClientBuilder.create(properties.getToken())
                 .build()

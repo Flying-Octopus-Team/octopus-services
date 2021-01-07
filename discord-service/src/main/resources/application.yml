@@ -1,5 +1,6 @@
 discord:
   token: DISCORD_BOT_TOKEN
+  enabled: false
 
 trello:
   token: foo

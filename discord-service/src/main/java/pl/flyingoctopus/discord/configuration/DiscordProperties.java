@@ -11,4 +11,9 @@ public class DiscordProperties {
      * Used to authenticate bot within Discord API
      */
     private String token;
+
+    /**
+     * Enables discord integration
+     */
+    private boolean enabled = false;
 }
