@@ -91,6 +91,8 @@ project(':discord-service') {
         runtimeOnly('org.postgresql:postgresql')
         runtimeOnly('com.h2database:h2')
         runtimeOnly('io.r2dbc:r2dbc-h2')
+        implementation "org.flywaydb:flyway-core:7.4.0"
+
 
         // test
         testImplementation('org.testcontainers:postgresql')

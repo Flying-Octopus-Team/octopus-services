@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+
+  db:
+    container_name: fo-postgres
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=octopusdb
+      - POSTGRES_PASSWORD=octopusdb
+      - POSTGRES_DB=discorddb
