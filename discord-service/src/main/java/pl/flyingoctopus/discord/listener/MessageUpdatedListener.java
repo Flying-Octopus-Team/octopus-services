@@ -3,14 +3,14 @@ package pl.flyingoctopus.discord.listener;
 import discord4j.core.event.domain.message.MessageUpdateEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.flyingoctopus.discord.service.ExampleService;
+import pl.flyingoctopus.discord.member.command.MemberCommand;
 import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class ExampleUpdatedListener implements EventListener<MessageUpdateEvent> {
+public class MessageUpdatedListener implements EventListener<MessageUpdateEvent> {
 
-    private final ExampleService exampleService;
+    private final MemberCommand memberCommand;
 
     @Override
     public Class<MessageUpdateEvent> getEventType() {
@@ -22,6 +22,6 @@ public class ExampleUpdatedListener implements EventListener<MessageUpdateEvent>
         return Mono.just(event)
                 .filter(MessageUpdateEvent::isContentChanged)
                 .flatMap(MessageUpdateEvent::getMessage)
-                .flatMap(exampleService::coolifyMessage);
+                .flatMap(memberCommand::handleMessage);
     }
 }

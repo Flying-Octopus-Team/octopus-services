@@ -31,6 +31,9 @@ subprojects {
         implementation('org.springframework.boot:spring-boot-starter-webflux')
         annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')
 
+        // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+        implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
 
         //test
         testImplementation('io.projectreactor:reactor-test')
