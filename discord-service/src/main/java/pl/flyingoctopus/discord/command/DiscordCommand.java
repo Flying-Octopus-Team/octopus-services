@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+//TODO: Use in main command, separate member into member command and add action
 public interface DiscordCommand {
 
     Pattern getCommandPattern();
@@ -23,11 +24,12 @@ public interface DiscordCommand {
                 .flatMap(msg -> {
                     var commandArgument = msg.getContent().split("\\s")[1];
                     return Flux.fromIterable(getActions())
-                            .filter(action -> action.getName().equals(commandArgument))
+//                            .filter(action -> action.getName().equals(commandArgument))
                             .defaultIfEmpty(getCommandUsageAction())
                             .distinct()
                             .next()
-                            .flatMap(discordAction -> discordAction.run(message));
+//                            .flatMap(discordAction -> discordAction.run(message));
+                            .then();
                 })
                 .then();
     }

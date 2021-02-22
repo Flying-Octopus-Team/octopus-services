@@ -1,12 +1,12 @@
 package pl.flyingoctopus.discord.action;
 
-import discord4j.core.object.entity.Message;
+import pl.flyingoctopus.discord.command.MessageArgumentsDTO;
 import reactor.core.publisher.Mono;
 
 public interface DiscordAction {
 
-    String getName();
+    boolean isMatching(MessageArgumentsDTO messageArgumentsDTO);
 
-    Mono<Void> run(Message message);
+    Mono<Void> run(MessageArgumentsDTO messageArgumentsDTO);
 
 }
