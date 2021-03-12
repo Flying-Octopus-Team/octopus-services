@@ -1,7 +1,7 @@
 package pl.flyingoctopus.discord.action;
 
 import discord4j.core.object.entity.Message;
-import pl.flyingoctopus.discord.command.MessageArgumentsDTO;
+import pl.flyingoctopus.discord.arguments.MessageArguments;
 import reactor.core.publisher.Mono;
 
 import java.util.regex.Pattern;
@@ -18,24 +18,25 @@ public class HelpAction implements DiscordAction {
         helpPattern = DEFAULT_COMMAND_COMPILED_PATTERN;
     }
 
-    public HelpAction(String helpMessageResponse, Pattern helpPattern) {
-        this.helpMessageResponse = helpMessageResponse;
-        this.helpPattern = helpPattern;
-    }
-
     @Override
-    public boolean isMatching(MessageArgumentsDTO messageArgumentsDTO) {
-        return messageArgumentsDTO.getArguments().stream()
+    public boolean isMatching(MessageArguments messageArguments) {
+        return messageArguments.getArguments().stream()
                 .findFirst()
                 .map(arg -> helpPattern.matcher(arg).matches())
                 .orElse(false);
     }
 
     @Override
-    public Mono<Void> run(MessageArgumentsDTO messageArgumentsDTO) {
-        return Mono.just(messageArgumentsDTO.getMessage())
+    public Mono<Void> run(MessageArguments messageArguments) {
+        return Mono.just(messageArguments.getMessage())
                 .flatMap(Message::getChannel)
                 .flatMap(channel -> channel.createMessage(helpMessageResponse))
                 .then();
+    }
+
+    public Mono<Message> sendHelpMessage(MessageArguments messageArguments) {
+        return Mono.just(messageArguments.getMessage())
+                .flatMap(Message::getChannel)
+                .flatMap(channel -> channel.createMessage(helpMessageResponse));
     }
 }

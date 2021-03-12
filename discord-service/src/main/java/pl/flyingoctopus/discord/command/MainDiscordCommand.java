@@ -3,44 +3,52 @@ package pl.flyingoctopus.discord.command;
 import discord4j.core.object.entity.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import pl.flyingoctopus.discord.action.DiscordAction;
 import pl.flyingoctopus.discord.action.HelpAction;
-import pl.flyingoctopus.discord.member.action.MemberAddAction;
-import reactor.core.publisher.Flux;
+import pl.flyingoctopus.discord.arguments.MessageArguments;
+import pl.flyingoctopus.discord.member.action.MemberCommand;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 @Component
 @RequiredArgsConstructor
-public class MainDiscordCommand {
+public class MainDiscordCommand implements DiscordCommand {
 
     private static final Pattern COMMAND_COMPILED_PATTERN = Pattern.compile("^!fo.*");
     private static final String ARGUMENTS_SEPARATOR_REGEX = "\\s";
 
     private final HelpAction helpAction = new HelpAction("    usage: !fo <command>");
-    private final MemberAddAction memberAddAction;
+    private final MemberCommand memberCommand;
+
+    @Override
+    public Pattern getCommandPattern() {
+        return COMMAND_COMPILED_PATTERN;
+    }
+
+    @Override
+    public DiscordAction getHelpAction() {
+        return helpAction;
+    }
+
+    @Override
+    public Set<DiscordAction> getActions() {
+        return Set.of(memberCommand, helpAction);
+    }
 
     public Mono<Void> handleMessage(Message message) {
         return Mono.just(message)
                 .filter(msg -> validateAuthorIsNotBot(msg) && isMatchingCommandPattern(msg.getContent()))
-                .flatMap(msg -> {
-                    final var messageArguments = getMessageArgumentsDTO(message, msg);
-                    return Flux.just(memberAddAction, helpAction)
-                            .filter(action -> action.isMatching(messageArguments))
-                            .defaultIfEmpty(helpAction)
-                            .distinct()
-                            .next()
-                            .flatMap(discordAction -> discordAction.run(messageArguments));
-                })
+                .flatMap(msg -> this.run(getMessageArgumentsDTO(message, msg)))
                 .then();
     }
 
-    private MessageArgumentsDTO getMessageArgumentsDTO(Message message, Message msg) {
+    private MessageArguments getMessageArgumentsDTO(Message message, Message msg) {
         var args = new LinkedList<>(Arrays.asList(msg.getContent().split(ARGUMENTS_SEPARATOR_REGEX)));
-        args.remove(0);
-        return new MessageArgumentsDTO(message, args);
+        return new MessageArguments(message, args);
     }
 
     private boolean validateAuthorIsNotBot(Message msg) {
@@ -51,5 +59,4 @@ public class MainDiscordCommand {
     private boolean isMatchingCommandPattern(String content) {
         return COMMAND_COMPILED_PATTERN.matcher(content).matches();
     }
-
 }
