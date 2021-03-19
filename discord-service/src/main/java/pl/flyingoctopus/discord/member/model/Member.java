@@ -24,6 +24,9 @@ public class Member {
     @Column("id")
     private UUID id;
 
+    @Column("discord_name")
+    private String discordName;
+
     @Column("discord_id")
     private String discordId;
 
@@ -33,5 +36,10 @@ public class Member {
     @Column("trello_report_card_id")
     private String trelloReportCardId;
 
+    @Column("trello_email")
+    private String trelloEmail;
+
+    @Column("wiki_email")
+    private String wikiEmail;
 
 }

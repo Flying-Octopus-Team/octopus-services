@@ -1,0 +1,55 @@
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+    }
+}
+
+dependencies {
+    // spring boot
+    implementation('org.springframework.boot:spring-boot-starter-webflux')
+    annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
+    implementation group: 'commons-validator', name: 'commons-validator', version: '1.7'
+
+    //test
+    testImplementation('io.projectreactor:reactor-test')
+    implementation 'org.codehaus.groovy:groovy:3.0.7'
+    testImplementation('org.spockframework:spock-core:2.0-M3-groovy-3.0')
+    testImplementation('org.spockframework:spock-spring:2.0-M3-groovy-3.0')
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
+    testRuntimeOnly "net.bytebuddy:byte-buddy:1.10.10"
+    testRuntimeOnly "org.objenesis:objenesis:3.1"
+
+    // lombok
+    compileOnly('org.projectlombok:lombok')
+    annotationProcessor('org.projectlombok:lombok')
+    testCompileOnly('org.projectlombok:lombok')
+    testAnnotationProcessor('org.projectlombok:lombok')
+}
+
+sourceCompatibility = '15'
+
+ext {
+    projectName = "$project.name"
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}

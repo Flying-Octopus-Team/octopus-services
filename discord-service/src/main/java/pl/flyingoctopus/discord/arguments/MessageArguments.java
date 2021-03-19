@@ -1,4 +1,4 @@
-package pl.flyingoctopus.discord.command;
+package pl.flyingoctopus.discord.arguments;
 
 import discord4j.core.object.entity.Message;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class MessageArgumentsDTO {
+public class MessageArguments {
 
     private Message message;
     private List<String> arguments;
