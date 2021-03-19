@@ -23,6 +23,7 @@ public class MainDiscordCommand implements DiscordCommand {
 
     private final HelpAction helpAction = new HelpAction("    usage: !fo <command>");
     private final MemberCommand memberCommand;
+    private final LinksCommand linksCommand;
 
     @Override
     public Pattern getCommandPattern() {
@@ -36,7 +37,7 @@ public class MainDiscordCommand implements DiscordCommand {
 
     @Override
     public Set<DiscordAction> getActions() {
-        return Set.of(memberCommand, helpAction);
+        return Set.of(memberCommand, linksCommand, helpAction);
     }
 
     public Mono<Void> handleMessage(Message message) {

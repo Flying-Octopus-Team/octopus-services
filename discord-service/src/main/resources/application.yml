@@ -2,6 +2,14 @@ discord:
   token: DISCORD_BOT_TOKEN
   enabled: false
 
+  links:
+    '[Strona internetowa]': https://flyingoctopus.pl
+    Facebook: https://www.facebook.com/FO.flyingoctopus/
+    Itch.io: https://flyingoctopus.itch.io/
+    Wiki: https://wiki.flyingoctopus.pl/bin/view/Main/
+    Asterielle: http://elf-vs-dwarves.pl/
+    Discord: https://discord.com/invite/Q2DuSNY
+
 trello:
   token: foo
 
