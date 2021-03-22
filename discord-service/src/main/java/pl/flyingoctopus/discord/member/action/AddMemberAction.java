@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Component;
 import pl.flyingoctopus.discord.action.DiscordAction;
-import pl.flyingoctopus.discord.action.HelpAction;
+import pl.flyingoctopus.discord.action.help.HelpWithArgumentsAction;
 import pl.flyingoctopus.discord.arguments.MessageArguments;
 import pl.flyingoctopus.discord.arguments.ValidatedArguments;
 import pl.flyingoctopus.discord.arguments.ValidationException;
@@ -67,7 +67,7 @@ public class AddMemberAction implements DiscordAction {
     public static final List<Option> AVAILABLE_OPTIONS = List.of(USER_MENTION_OPT, MEMBER_EMAIL_OPT, TRELLO_EMAIL_OPT, WIKI_EMAIL_OPT);
 
     private final EmailValidator emailValidator = EmailValidator.getInstance();
-    private final HelpAction helpAction = new HelpAction("    !fo member add <member_mention> [<member_email>] [OPTIONS]\n");
+    private final HelpWithArgumentsAction helpAction = new HelpWithArgumentsAction("!fo member add", "Command used to add user as member", AVAILABLE_OPTIONS, "Read more here: https://wiki.flyingoctopus.pl/");
 
     private final MemberRepository memberRepository;
 

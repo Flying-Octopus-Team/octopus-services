@@ -4,7 +4,7 @@ import discord4j.core.object.entity.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.flyingoctopus.discord.action.DiscordAction;
-import pl.flyingoctopus.discord.action.HelpAction;
+import pl.flyingoctopus.discord.action.help.DefaultHelpAction;
 import pl.flyingoctopus.discord.arguments.MessageArguments;
 import pl.flyingoctopus.discord.links.LinksAction;
 import pl.flyingoctopus.discord.member.action.MemberCommand;
@@ -22,7 +22,7 @@ public class MainDiscordCommand implements DiscordCommand {
     private static final Pattern COMMAND_COMPILED_PATTERN = Pattern.compile("^!fo.*");
     private static final String ARGUMENTS_SEPARATOR_REGEX = "\\s";
 
-    private final HelpAction helpAction = new HelpAction("    usage: !fo <command>");
+    private final DefaultHelpAction helpAction = new DefaultHelpAction("    usage: !fo <command>");
     private final MemberCommand memberCommand;
     private final LinksAction linksAction;
 
