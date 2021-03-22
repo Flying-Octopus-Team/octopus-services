@@ -1,10 +1,11 @@
-package pl.flyingoctopus.discord.command;
+package pl.flyingoctopus.discord.links;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.flyingoctopus.discord.action.DiscordAction;
 import pl.flyingoctopus.discord.action.HelpAction;
-import pl.flyingoctopus.discord.action.LinksAction;
+import pl.flyingoctopus.discord.command.DiscordCommand;
+import pl.flyingoctopus.discord.links.LinksAction;
 
 import java.util.Set;
 import java.util.regex.Pattern;

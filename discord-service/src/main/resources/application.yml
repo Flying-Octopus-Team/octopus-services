@@ -3,12 +3,18 @@ discord:
   enabled: false
 
   links:
-    '[Strona internetowa]': https://flyingoctopus.pl
-    Facebook: https://www.facebook.com/FO.flyingoctopus/
-    Itch.io: https://flyingoctopus.itch.io/
-    Wiki: https://wiki.flyingoctopus.pl/bin/view/Main/
-    Asterielle: http://elf-vs-dwarves.pl/
-    Discord: https://discord.com/invite/Q2DuSNY
+    - alias: Strona internetowa
+      url: https://flyingoctopus.pl
+    - alias: Facebook
+      url: https://www.facebook.com/FO.flyingoctopus/
+    - alias: Itch.io
+      url: https://flyingoctopus.itch.io/
+    - alias: Wiki
+      url: https://wiki.flyingoctopus.pl/bin/view/Main/
+    - alias: Asterielle
+      url: http://elf-vs-dwarves.pl/
+    - alias: Discord
+      url: https://discord.com/invite/Q2DuSNY
 
 trello:
   token: foo

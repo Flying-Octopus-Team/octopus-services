@@ -1,16 +1,17 @@
-package pl.flyingoctopus.discord.action;
+package pl.flyingoctopus.discord.links;
 
 import discord4j.core.object.entity.Message;
+import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.util.Color;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
+import pl.flyingoctopus.discord.action.DiscordAction;
 import pl.flyingoctopus.discord.arguments.MessageArguments;
 import pl.flyingoctopus.discord.configuration.DiscordProperties;
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.function.Consumer;
 
 @Component
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class LinksAction implements DiscordAction {
 
     private final DiscordProperties discordProperties;
     private final String thumbnailUrl = "https://wiki.flyingoctopus.pl/bin/download/Dla%20Cz%C5%82onk%C3%B3w/Zasoby/Logo/WebHome/octopus_pictorial_transparent.png?rev=1.1";
+    private final String embedTitle = "Linki";
 
     @Override
     public boolean isMatching(MessageArguments messageArguments) {
@@ -29,20 +31,20 @@ public class LinksAction implements DiscordAction {
     public Mono<Void> run(MessageArguments messageArguments) {
         return Mono.just(messageArguments.getMessage())
                 .flatMap(Message::getChannel)
-                .flatMap(channel -> channel.createEmbed(spec ->
-                        spec.setColor(Color.LIGHT_SEA_GREEN)
-                                .setTitle("Linki")
-                                .setDescription(CreateEmbedDescription())
-                                .setThumbnail(thumbnailUrl)))
+                .flatMap(channel -> channel.createEmbed(prepareEmbedSpec))
                 .then();
     }
 
-    private String CreateEmbedDescription() {
-        String description = "";
-        Map<String, String> property = discordProperties.getLinks();
-        Set<String> keySet = property.keySet();
-        for (String key: keySet) description += String.format("[%s](%s)\n", key, property.get(key));
-
-        return description;
+    private String createEmbedDescription() {
+        return discordProperties.getLinks().stream()
+                .map(linksProperty -> String.format("[%s](%s)\n", linksProperty.getAlias(), linksProperty.getUrl()))
+                .reduce("", String::concat);
     }
+
+    private Consumer<EmbedCreateSpec> prepareEmbedSpec = spec -> {
+        spec.setColor(Color.LIGHT_SEA_GREEN)
+                .setTitle(embedTitle)
+                .setDescription(createEmbedDescription())
+                .setThumbnail(thumbnailUrl);
+    };
 }
