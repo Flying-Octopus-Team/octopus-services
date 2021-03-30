@@ -22,8 +22,8 @@ import java.util.regex.Pattern;
 public class LinksAction implements DiscordAction {
 
     private final DiscordProperties discordProperties;
-    private final String thumbnailUrl = "https://wiki.flyingoctopus.pl/bin/download/Dla%20Cz%C5%82onk%C3%B3w/Zasoby/Logo/WebHome/octopus_pictorial_transparent.png?rev=1.1";
-    private final String embedTitle = "Linki";
+    private static final String THUMBNAIL_URL = "https://wiki.flyingoctopus.pl/bin/download/Dla%20Cz%C5%82onk%C3%B3w/Zasoby/Logo/WebHome/octopus_pictorial_transparent.png?rev=1.1";
+    private static final String EMBED_TITLE = "Linki";
 
     private static final Pattern COMMAND_COMPILED_PATTERN = Pattern.compile("links");
 
@@ -43,7 +43,7 @@ public class LinksAction implements DiscordAction {
     public Mono<Void> run(MessageArguments messageArguments) {
         return Mono.just(messageArguments.getMessage())
                 .flatMap(Message::getChannel)
-                .flatMap(channel -> channel.createEmbed(prepareEmbedSpec))
+                .flatMap(channel -> channel.createEmbed(this::buildEmbeddedMessage))
                 .then();
     }
 
@@ -53,10 +53,10 @@ public class LinksAction implements DiscordAction {
                 .reduce("", String::concat);
     }
 
-    private Consumer<EmbedCreateSpec> prepareEmbedSpec = spec -> {
+    private void buildEmbeddedMessage(EmbedCreateSpec spec) {
         spec.setColor(Color.LIGHT_SEA_GREEN)
-                .setTitle(embedTitle)
+                .setTitle(EMBED_TITLE)
                 .setDescription(createEmbedDescription())
-                .setThumbnail(thumbnailUrl);
-    };
+                .setThumbnail(THUMBNAIL_URL);
+    }
 }

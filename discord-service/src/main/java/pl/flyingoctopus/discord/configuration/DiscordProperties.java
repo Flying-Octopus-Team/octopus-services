@@ -20,5 +20,8 @@ public class DiscordProperties {
      */
     private boolean enabled = false;
 
+    /**
+     * Used as a body of links command message
+     */
     private List<LinksProperty> links;
 }
