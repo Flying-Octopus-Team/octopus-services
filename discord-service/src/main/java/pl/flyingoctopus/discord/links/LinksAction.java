@@ -25,6 +25,8 @@ public class LinksAction implements DiscordAction {
     private static final String THUMBNAIL_URL = "https://wiki.flyingoctopus.pl/bin/download/Dla%20Cz%C5%82onk%C3%B3w/Zasoby/Logo/WebHome/octopus_pictorial_transparent.png?rev=1.1";
     private static final String EMBED_TITLE = "Linki";
 
+    private final DefaultHelpAction helpAction = new DefaultHelpAction("    usage: !fo links");
+
     private static final Pattern COMMAND_COMPILED_PATTERN = Pattern.compile("links");
 
     @Override
