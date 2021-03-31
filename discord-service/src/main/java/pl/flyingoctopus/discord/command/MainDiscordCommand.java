@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import pl.flyingoctopus.discord.action.DiscordAction;
 import pl.flyingoctopus.discord.action.help.DefaultHelpAction;
 import pl.flyingoctopus.discord.arguments.MessageArguments;
+import pl.flyingoctopus.discord.links.LinksAction;
 import pl.flyingoctopus.discord.member.action.MemberCommand;
 import reactor.core.publisher.Mono;
 
@@ -23,6 +24,7 @@ public class MainDiscordCommand implements DiscordCommand {
 
     private final DefaultHelpAction helpAction = new DefaultHelpAction("    usage: !fo <command>");
     private final MemberCommand memberCommand;
+    private final LinksAction linksAction;
 
     @Override
     public Pattern getCommandPattern() {
@@ -36,7 +38,7 @@ public class MainDiscordCommand implements DiscordCommand {
 
     @Override
     public Set<DiscordAction> getActions() {
-        return Set.of(memberCommand, helpAction);
+        return Set.of(memberCommand, linksAction, helpAction);
     }
 
     public Mono<Void> handleMessage(Message message) {
