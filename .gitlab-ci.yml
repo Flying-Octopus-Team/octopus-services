@@ -1,13 +1,11 @@
-# This is the Gradle build system for JVM applications
-# https://gradle.org/
-# https://github.com/gradle/gradle
+services:
+  - docker:dind
+
 image: gradle:6.8.3-jdk15
 
-# Disable the Gradle daemon for Continuous Integration servers as correctness
-# is usually a priority over speed in CI environments. Using a fresh
-# runtime for each build is more reliable since the runtime is completely
-# isolated from any previous builds.
 variables:
+  DOCKER_HOST: "tcp://docker:2375"
+  DOCKER_DRIVER: overlay2
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 before_script:
