@@ -3,6 +3,11 @@ services:
 
 image: gradle:6.8.3-jdk15
 
+stages:
+  - build
+  - test
+  - notification
+
 variables:
   DOCKER_HOST: "tcp://docker:2375"
   DOCKER_DRIVER: overlay2
@@ -30,3 +35,25 @@ test:
     paths:
       - build
       - .gradle
+
+success_notification:
+  stage: notification
+  script:
+    - wget https://raw.githubusercontent.com/Flying-Octopus-Team/gitlab-ci-discord-webhook/master/send.sh
+    - chmod +x send.sh
+    - ./send.sh success $WEBHOOK_URL
+  when: on_success
+  only:
+    - main
+    - merge_requests
+
+failure_notification:
+  stage: notification
+  script:
+    - wget https://raw.githubusercontent.com/Flying-Octopus-Team/gitlab-ci-discord-webhook/master/send.sh
+    - chmod +x send.sh
+    - ./send.sh failure $WEBHOOK_URL
+  when: on_failure
+  only:
+    - main
+    - merge_requests
