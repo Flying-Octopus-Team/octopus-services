@@ -24,16 +24,16 @@ class EnvironmentInitializer {
 
         @Override
         void initialize(ConfigurableApplicationContext applicationContext) {
-
-            log.info("spring.datasource.url={}", postgreSQLContainer.getJdbcUrl())
-            log.info("spring.datasource.username={}", postgreSQLContainer.getUsername())
-
-            TestPropertyValues.of(
-                    "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
-                    "spring.datasource.username=" + postgreSQLContainer.getUsername(),
-                    "spring.datasource.password=" + postgreSQLContainer.getPassword(),
-                    "discord.enabled=false"
-            ).applyTo(applicationContext.getEnvironment())
+            TestPropertyValues.of(PROPERTIES).applyTo(applicationContext.getEnvironment())
         }
     }
+
+    static final List<String> PROPERTIES = ["spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
+                                            "spring.flyway.url=" + postgreSQLContainer.getJdbcUrl(),
+                                            "spring.datasource.username=" + postgreSQLContainer.getUsername(),
+                                            "spring.flyway.username=" + postgreSQLContainer.getUsername(),
+                                            "spring.datasource.password=" + postgreSQLContainer.getPassword(),
+                                            "spring.flyway.password=" + postgreSQLContainer.getPassword(),
+                                            "discord.enabled=false"
+    ]
 }
