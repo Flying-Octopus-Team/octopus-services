@@ -1,5 +1,8 @@
 package pl.flyingoctopus.discord
 
+
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.boot.test.util.TestPropertyValues
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
@@ -16,8 +19,15 @@ class EnvironmentInitializer {
     }
 
     static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+        private static final Logger log = LoggerFactory.getLogger(Initializer.class);
+
         @Override
         void initialize(ConfigurableApplicationContext applicationContext) {
+
+            log.info("spring.datasource.url={}", postgreSQLContainer.getJdbcUrl())
+            log.info("spring.datasource.username={}", postgreSQLContainer.getUsername())
+
             TestPropertyValues.of(
                     "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
                     "spring.datasource.username=" + postgreSQLContainer.getUsername(),
