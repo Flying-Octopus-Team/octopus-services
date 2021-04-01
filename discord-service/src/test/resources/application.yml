@@ -1,0 +1,30 @@
+discord:
+  enabled: false
+
+  links:
+    - alias: Strona internetowa
+      url: https://flyingoctopus.pl
+    - alias: Facebook
+      url: https://www.facebook.com/FO.flyingoctopus/
+    - alias: Itch.io
+      url: https://flyingoctopus.itch.io/
+    - alias: Wiki
+      url: https://wiki.flyingoctopus.pl/bin/view/Main/
+    - alias: Asterielle
+      url: http://elf-vs-dwarves.pl/
+    - alias: Discord
+      url: https://discord.com/invite/Q2DuSNY
+
+trello:
+  token: foo
+
+spring:
+  r2dbc:
+    url: r2dbc:tc:postgresql:///test
+    username: fobot
+    password: fobot
+  flyway:
+    url: jdbc:tc:postgresql:///test
+    user: ${spring.r2dbc.username}
+    password: ${spring.r2dbc.password}
+    baseline-on-migrate: true
