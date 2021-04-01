@@ -42,10 +42,12 @@ success_notification:
     - wget https://raw.githubusercontent.com/Flying-Octopus-Team/gitlab-ci-discord-webhook/master/send.sh
     - chmod +x send.sh
     - ./send.sh success $WEBHOOK_URL
-  when: on_success
-  only:
-    - main
-    - merge_requests
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
+
 
 failure_notification:
   stage: notification
@@ -53,7 +55,8 @@ failure_notification:
     - wget https://raw.githubusercontent.com/Flying-Octopus-Team/gitlab-ci-discord-webhook/master/send.sh
     - chmod +x send.sh
     - ./send.sh failure $WEBHOOK_URL
-  when: on_failure
-  only:
-    - main
-    - merge_requests
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+      when: on_failure
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_failure
