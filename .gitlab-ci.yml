@@ -1,0 +1,62 @@
+services:
+  - docker:dind
+
+image: gradle:6.8.3-jdk15
+
+stages:
+  - build
+  - test
+  - notification
+
+variables:
+  DOCKER_HOST: "tcp://docker:2375"
+  DOCKER_DRIVER: overlay2
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+build:
+  stage: build
+  script: gradle --build-cache assemble
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+      - .gradle
+
+test:
+  stage: test
+  script: gradle check
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+
+success_notification:
+  stage: notification
+  script:
+    - wget https://raw.githubusercontent.com/Flying-Octopus-Team/gitlab-ci-discord-webhook/master/send.sh
+    - chmod +x send.sh
+    - ./send.sh success $WEBHOOK_URL
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
+
+
+failure_notification:
+  stage: notification
+  script:
+    - wget https://raw.githubusercontent.com/Flying-Octopus-Team/gitlab-ci-discord-webhook/master/send.sh
+    - chmod +x send.sh
+    - ./send.sh failure $WEBHOOK_URL
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+      when: on_failure
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_failure
