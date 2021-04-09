@@ -21,6 +21,6 @@ public class MessageCreatedListener implements EventListener<MessageCreateEvent>
 
     @Override
     public Mono<Void> execute(MessageCreateEvent event) {
-        return mainCommand.handleMessage(event.getMessage());
+        return mainCommand.handleMessage(event);
     }
 }

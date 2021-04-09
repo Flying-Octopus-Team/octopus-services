@@ -1,5 +1,6 @@
 package pl.flyingoctopus.discord.member.action;
 
+import discord4j.core.object.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -15,6 +16,7 @@ import pl.flyingoctopus.discord.action.help.HelpWithArgumentsAction;
 import pl.flyingoctopus.discord.arguments.MessageArguments;
 import pl.flyingoctopus.discord.arguments.ValidatedArguments;
 import pl.flyingoctopus.discord.arguments.ValidationException;
+import pl.flyingoctopus.discord.configure.service.ConfigurationService;
 import pl.flyingoctopus.discord.member.AddArguments;
 import pl.flyingoctopus.discord.member.model.Member;
 import pl.flyingoctopus.discord.member.repository.MemberRepository;
@@ -70,6 +72,7 @@ public class AddMemberAction implements DiscordAction {
     private final HelpWithArgumentsAction helpAction = new HelpWithArgumentsAction("!fo member add", "Command used to add user as member", AVAILABLE_OPTIONS, "Read more here: https://wiki.flyingoctopus.pl/");
 
     private final MemberRepository memberRepository;
+    private final ConfigurationService configurationService;
 
     @Override
     public boolean isMatching(MessageArguments messageArguments) {
@@ -112,26 +115,35 @@ public class AddMemberAction implements DiscordAction {
                 .getMessage()
                 .getUserMentions()
                 .next()
+                .flatMap(user -> configurationService.getMemberRoleId().flatMap(roleId -> addMemberRole(addArguments, user, roleId)))
                 .flatMap(user -> memberRepository.save(buildMemberEntity(addArguments, user)));
     }
 
-    private Member buildMemberEntity(AddArguments addArguments, discord4j.core.object.entity.User user) {
-        var builder = Member.builder();
-        builder.discordId(user.getId().asString())
-                .discordName(user.getUsername());
+    private Mono<User> addMemberRole(AddArguments addArguments, User user, discord4j.common.util.Snowflake roleId) {
+        var guildId = addArguments.getMessage().getGuildId()
+                .orElseThrow(() -> new ValidationException("Guild missing!")); //TODO might want to persist guild during configure?
+        return user.asMember(guildId)
+                .flatMap(member -> member.addRole(roleId))
+                .thenReturn(user);
+    }
+
+    private Member buildMemberEntity(AddArguments addArguments, User user) {
+        var entity = new Member();
+        entity.setDiscordId(user.getId().asString());
+        entity.setDiscordName(user.getUsername());
         if (StringUtils.isEmpty(addArguments.getTrelloEmail())) {
-            builder.trelloEmail(addArguments.getMemberEmail());
+            entity.setTrelloEmail(addArguments.getMemberEmail());
         } else {
-            builder.trelloEmail(addArguments.getTrelloEmail());
+            entity.setTrelloEmail(addArguments.getTrelloEmail());
         }
 
         if (StringUtils.isEmpty(addArguments.getWikiEmail())) {
-            builder.wikiEmail(addArguments.getMemberEmail());
+            entity.setWikiEmail(addArguments.getMemberEmail());
         } else {
-            builder.wikiEmail(addArguments.getWikiEmail());
+            entity.setWikiEmail(addArguments.getWikiEmail());
         }
 
-        return builder.build();
+        return entity;
     }
 
     private ValidatedArguments<AddArguments> tryParseOptions(MessageArguments args) {

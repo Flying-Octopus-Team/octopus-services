@@ -24,4 +24,9 @@ public class DiscordProperties {
      * Used as a body of links command message
      */
     private List<LinksProperty> links;
+
+    /**
+     * Authorised admin users
+     */
+    private List<String> admins;
 }

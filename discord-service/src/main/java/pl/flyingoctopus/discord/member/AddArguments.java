@@ -13,7 +13,7 @@ public class AddArguments extends MessageArguments {
     private final String wikiEmail;
 
     public AddArguments(MessageArguments messageArguments) {
-        super(messageArguments.getMessage(), messageArguments.getArguments());
+        super(messageArguments.getMessage(), messageArguments.getArguments(), messageArguments.hasMemberRole());
         this.userMention = null;
         this.memberEmail = null;
         this.trelloEmail = null;
@@ -22,7 +22,7 @@ public class AddArguments extends MessageArguments {
 
     @Builder
     public AddArguments(MessageArguments messageArguments, String userMention, String memberEmail, String trelloEmail, String wikiEmail) {
-        super(messageArguments.getMessage(), messageArguments.getArguments());
+        super(messageArguments.getMessage(), messageArguments.getArguments(), messageArguments.hasMemberRole());
         this.userMention = userMention;
         this.memberEmail = memberEmail;
         this.trelloEmail = trelloEmail;
