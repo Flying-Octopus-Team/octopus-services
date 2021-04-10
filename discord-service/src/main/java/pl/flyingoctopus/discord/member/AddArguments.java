@@ -11,6 +11,7 @@ public class AddArguments extends MessageArguments {
     private final String memberEmail;
     private final String trelloEmail;
     private final String wikiEmail;
+    private final  String trelloId;
 
     public AddArguments(MessageArguments messageArguments) {
         super(messageArguments.getMessage(), messageArguments.getArguments(), messageArguments.hasMemberRole());
@@ -18,14 +19,16 @@ public class AddArguments extends MessageArguments {
         this.memberEmail = null;
         this.trelloEmail = null;
         this.wikiEmail = null;
+        this.trelloId = null;
     }
 
     @Builder
-    public AddArguments(MessageArguments messageArguments, String userMention, String memberEmail, String trelloEmail, String wikiEmail) {
+    public AddArguments(MessageArguments messageArguments, String userMention, String memberEmail, String trelloEmail, String wikiEmail, String trelloId) {
         super(messageArguments.getMessage(), messageArguments.getArguments(), messageArguments.hasMemberRole());
         this.userMention = userMention;
         this.memberEmail = memberEmail;
         this.trelloEmail = trelloEmail;
         this.wikiEmail = wikiEmail;
+        this.trelloId = trelloId;
     }
 }

@@ -65,8 +65,16 @@ public class AddMemberAction implements DiscordAction {
             .numberOfArgs(ARGUMENTS_COUNT)
             .optionalArg(false)
             .desc("Sends xwiki invite to given email").build();
+    private static final Option TRELLO_TOKEN_OPT = Option.builder("T")
+            .required(false)
+            .longOpt("trello-token-api")
+            .hasArg()
+            .argName("TRELLO_TOKEN_API")
+            .numberOfArgs(ARGUMENTS_COUNT)
+            .optionalArg(false)
+            .desc("Used to add brief reports to user's trello card").build();
 
-    public static final List<Option> AVAILABLE_OPTIONS = List.of(USER_MENTION_OPT, MEMBER_EMAIL_OPT, TRELLO_EMAIL_OPT, WIKI_EMAIL_OPT);
+    public static final List<Option> AVAILABLE_OPTIONS = List.of(USER_MENTION_OPT, MEMBER_EMAIL_OPT, TRELLO_EMAIL_OPT, WIKI_EMAIL_OPT, TRELLO_TOKEN_OPT);
 
     private final EmailValidator emailValidator = EmailValidator.getInstance();
     private final HelpWithArgumentsAction helpAction = new HelpWithArgumentsAction("!fo member add", "Command used to add user as member", AVAILABLE_OPTIONS, "Read more here: https://wiki.flyingoctopus.pl/");
@@ -93,6 +101,7 @@ public class AddMemberAction implements DiscordAction {
                 .map(ValidatedArguments::getArguments)
                 .flatMap(this::addMember)
                 .flatMap(this::sendTrelloInvite)
+                //TODO: save trello card id
                 .flatMap(member -> messageArguments
                         .getMessage()
                         .getChannel()
@@ -143,6 +152,8 @@ public class AddMemberAction implements DiscordAction {
             entity.setWikiEmail(addArguments.getWikiEmail());
         }
 
+        entity.setTrelloId(addArguments.getTrelloId());
+
         return entity;
     }
 
@@ -184,6 +195,10 @@ public class AddMemberAction implements DiscordAction {
         if (isInvalidEmail(parsedArgs.getWikiEmail())) {
             return false;
         }
+        if (parsedArgs.getTrelloId().length() != 64 || parsedArgs.getTrelloId().replaceAll("^[0-9a-fA-F]", "").isEmpty()) {
+            return false;
+        }
+
         return true;
     }
 
@@ -214,6 +229,9 @@ public class AddMemberAction implements DiscordAction {
         }
         if (commandLine.hasOption(WIKI_EMAIL_OPT.getOpt())) {
             builder.wikiEmail(commandLine.getOptionValue(WIKI_EMAIL_OPT.getOpt()));
+        }
+        if (commandLine.hasOption(TRELLO_TOKEN_OPT.getOpt())) {
+            builder.trelloId(commandLine.getOptionValue(TRELLO_TOKEN_OPT.getOpt()));
         }
 
         return builder.build();
