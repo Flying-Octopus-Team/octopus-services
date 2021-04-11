@@ -20,6 +20,7 @@ import pl.flyingoctopus.discord.configure.service.ConfigurationService;
 import pl.flyingoctopus.discord.member.AddArguments;
 import pl.flyingoctopus.discord.member.model.Member;
 import pl.flyingoctopus.discord.member.repository.MemberRepository;
+import pl.flyingoctopus.trello.service.TrelloCardService;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -65,7 +66,7 @@ public class AddMemberAction implements DiscordAction {
             .numberOfArgs(ARGUMENTS_COUNT)
             .optionalArg(false)
             .desc("Sends xwiki invite to given email").build();
-    private static final Option TRELLO_TOKEN_OPT = Option.builder("T")
+    private static final Option TRELLO_TOKEN_OPT = Option.builder("token")
             .required(false)
             .longOpt("trello-token-api")
             .hasArg()
@@ -81,6 +82,8 @@ public class AddMemberAction implements DiscordAction {
 
     private final MemberRepository memberRepository;
     private final ConfigurationService configurationService;
+
+    private final TrelloCardService trelloCardService;
 
     @Override
     public boolean isMatching(MessageArguments messageArguments) {
@@ -101,7 +104,6 @@ public class AddMemberAction implements DiscordAction {
                 .map(ValidatedArguments::getArguments)
                 .flatMap(this::addMember)
                 .flatMap(this::sendTrelloInvite)
-                //TODO: save trello card id
                 .flatMap(member -> messageArguments
                         .getMessage()
                         .getChannel()
@@ -153,6 +155,8 @@ public class AddMemberAction implements DiscordAction {
         }
 
         entity.setTrelloId(addArguments.getTrelloId());
+
+        entity.setTrelloReportCardId(trelloCardService.getReportCardId(addArguments.getTrelloId()));
 
         return entity;
     }
