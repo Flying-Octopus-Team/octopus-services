@@ -44,6 +44,6 @@ public class MemberCommand implements DiscordCommand {
 
     @Override
     public boolean isAuthorised(MessageArguments messageArguments) {
-        return true;//messageArguments.hasMemberRole();
+        return messageArguments.hasMemberRole();
     }
 }

@@ -66,14 +66,6 @@ public class AddMemberAction implements DiscordAction {
             .numberOfArgs(ARGUMENTS_COUNT)
             .optionalArg(false)
             .desc("Sends xwiki invite to given email").build();
-    private static final Option TRELLO_TOKEN_OPT = Option.builder("token")
-            .required(false)
-            .longOpt("trello-token-api")
-            .hasArg()
-            .argName("TRELLO_TOKEN_API")
-            .numberOfArgs(ARGUMENTS_COUNT)
-            .optionalArg(false)
-            .desc("Used to add brief reports to user's trello card").build();
 
     public static final List<Option> AVAILABLE_OPTIONS = List.of(USER_MENTION_OPT, MEMBER_EMAIL_OPT, TRELLO_EMAIL_OPT, WIKI_EMAIL_OPT, TRELLO_TOKEN_OPT);
 
@@ -154,10 +146,6 @@ public class AddMemberAction implements DiscordAction {
             entity.setWikiEmail(addArguments.getWikiEmail());
         }
 
-        entity.setTrelloId(addArguments.getTrelloId());
-
-        entity.setTrelloReportCardId(trelloCardService.getReportCardId(addArguments.getTrelloId()));
-
         return entity;
     }
 
@@ -197,9 +185,6 @@ public class AddMemberAction implements DiscordAction {
             return false;
         }
         if (isInvalidEmail(parsedArgs.getWikiEmail())) {
-            return false;
-        }
-        if (parsedArgs.getTrelloId().length() != 64 || parsedArgs.getTrelloId().replaceAll("^[0-9a-fA-F]", "").isEmpty()) {
             return false;
         }
 
