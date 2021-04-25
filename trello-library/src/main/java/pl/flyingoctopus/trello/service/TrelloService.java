@@ -1,13 +1,11 @@
 package pl.flyingoctopus.trello.service;
 
+import reactor.core.publisher.Mono;
+
 public interface TrelloService {
 
-    default boolean addCommenttoCard(String cardId, String brief) {
-        return true;
-    }
+    public Mono<Void> addCommentToCard(String brief);
 
-    default String getReportCardId() {
-        return "1234";
-    }
+    public String getReportCardId();
 
 }

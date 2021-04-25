@@ -8,7 +8,7 @@ import pl.flyingoctopus.discord.action.help.DefaultHelpAction;
 import pl.flyingoctopus.discord.arguments.MessageArguments;
 import pl.flyingoctopus.discord.member.model.Member;
 import pl.flyingoctopus.discord.member.repository.MemberRepository;
-import pl.flyingoctopus.trello.service.TrelloCardService;
+import pl.flyingoctopus.trello.service.TrelloMockService;
 import reactor.core.publisher.Mono;
 
 import java.util.regex.Pattern;
@@ -22,7 +22,7 @@ public class BriefAction implements DiscordAction {
 
     private final MemberRepository memberRepository;
 
-    private final TrelloCardService trelloCardService;
+    private final TrelloMockService trelloMockService;
 
     @Override
     public boolean isMatching(MessageArguments messageArguments) {
@@ -37,7 +37,7 @@ public class BriefAction implements DiscordAction {
         removeFirstArgument(messageArguments);
         return Mono.just(messageArguments.getMessage().getAuthor().get())
                 .flatMap(this::findMemberByDiscordId)
-                .filter(member -> trelloCardService.addCommenttoCard(member.getTrelloId(), member.getTrelloReportCardId(), messageArguments.getArguments().toArray(new String[0])[0]))
+                .filter(member -> trelloMockService.addCommenttoCard(member.getTrelloId(), member.getTrelloReportCardId(), messageArguments.getArguments().toArray(new String[0])[0]))
                 .flatMap(member -> messageArguments
                     .getMessage()
                     .getChannel()
