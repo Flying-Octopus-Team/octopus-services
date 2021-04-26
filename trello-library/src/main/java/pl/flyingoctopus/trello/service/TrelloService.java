@@ -4,8 +4,6 @@ import reactor.core.publisher.Mono;
 
 public interface TrelloService {
 
-    public Mono<Void> addCommentToCard(String brief);
-
-    public String getReportCardId();
+    Mono<Boolean> addCommentToCard(String cardId, String brief);
 
 }

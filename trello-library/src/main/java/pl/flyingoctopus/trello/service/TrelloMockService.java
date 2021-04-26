@@ -8,12 +8,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class TrelloMockService implements TrelloService {
     @Override
-    public Mono<Void> addCommentToCard(String brief) {
-        return Mono.empty();
+    public Mono<Boolean> addCommentToCard(String cardId, String brief) {
+        return Mono.just(true);
     }
 
-    @Override
-    public String getReportCardId() {
-        return "1234";
-    }
 }

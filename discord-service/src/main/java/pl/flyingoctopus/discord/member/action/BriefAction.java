@@ -9,6 +9,7 @@ import pl.flyingoctopus.discord.arguments.MessageArguments;
 import pl.flyingoctopus.discord.member.model.Member;
 import pl.flyingoctopus.discord.member.repository.MemberRepository;
 import pl.flyingoctopus.trello.service.TrelloMockService;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.regex.Pattern;
@@ -35,20 +36,19 @@ public class BriefAction implements DiscordAction {
     @Override
     public Mono<Void> run(MessageArguments messageArguments) {
         removeFirstArgument(messageArguments);
-        return Mono.just(messageArguments.getMessage().getAuthor().get())
-                .flatMap(this::findMemberByDiscordId)
-                .filter(member -> trelloMockService.addCommenttoCard(member.getTrelloId(), member.getTrelloReportCardId(), messageArguments.getArguments().toArray(new String[0])[0]))
-                .flatMap(member -> messageArguments
+
+        if (messageArguments.getArguments().isEmpty())
+            return helpAction.sendHelpMessage(messageArguments).then();
+
+        return Mono.just(messageArguments.getMessage().getAuthor().get().getId().asString())
+                .flatMap(memberRepository::findByDiscordId)
+                .flatMap(member -> trelloMockService.addCommentToCard(member.getTrelloReportCardId(), messageArguments.getArguments().get(0)))
+                .filter(tempFlag -> tempFlag)
+                .flatMap(response -> messageArguments
                     .getMessage()
                     .getChannel()
-                    .flatMap(channel -> channel.createMessage("Brief report sent")))
+                    .flatMap(channel -> channel.createMessage(response.toString())))
                 .switchIfEmpty(helpAction.sendHelpMessage(messageArguments))
                 .then();
-    }
-
-    private Mono<Member> findMemberByDiscordId(User author) {
-        return memberRepository.findAll()
-                .filter(member -> author.getId().asString().equals(member.getDiscordId()))
-                .next();
     }
 }

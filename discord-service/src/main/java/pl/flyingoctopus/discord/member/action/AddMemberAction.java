@@ -67,7 +67,7 @@ public class AddMemberAction implements DiscordAction {
             .optionalArg(false)
             .desc("Sends xwiki invite to given email").build();
 
-    public static final List<Option> AVAILABLE_OPTIONS = List.of(USER_MENTION_OPT, MEMBER_EMAIL_OPT, TRELLO_EMAIL_OPT, WIKI_EMAIL_OPT, TRELLO_TOKEN_OPT);
+    public static final List<Option> AVAILABLE_OPTIONS = List.of(USER_MENTION_OPT, MEMBER_EMAIL_OPT, TRELLO_EMAIL_OPT, WIKI_EMAIL_OPT);
 
     private final EmailValidator emailValidator = EmailValidator.getInstance();
     private final HelpWithArgumentsAction helpAction = new HelpWithArgumentsAction("!fo member add", "Command used to add user as member", AVAILABLE_OPTIONS, "Read more here: https://wiki.flyingoctopus.pl/");
@@ -218,9 +218,6 @@ public class AddMemberAction implements DiscordAction {
         }
         if (commandLine.hasOption(WIKI_EMAIL_OPT.getOpt())) {
             builder.wikiEmail(commandLine.getOptionValue(WIKI_EMAIL_OPT.getOpt()));
-        }
-        if (commandLine.hasOption(TRELLO_TOKEN_OPT.getOpt())) {
-            builder.trelloId(commandLine.getOptionValue(TRELLO_TOKEN_OPT.getOpt()));
         }
 
         return builder.build();
