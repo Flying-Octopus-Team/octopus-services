@@ -25,6 +25,7 @@ public class MemberCommand implements DiscordCommand {
             """);
 
     private final AddMemberAction addMemberAction;
+    private final BriefAction briefAction;
 
     @Override
     public Pattern getCommandPattern() {
@@ -38,7 +39,7 @@ public class MemberCommand implements DiscordCommand {
 
     @Override
     public Set<DiscordAction> getActions() {
-        return Set.of(addMemberAction, helpAction);
+        return Set.of(addMemberAction, briefAction, helpAction);
     }
 
     @Override
