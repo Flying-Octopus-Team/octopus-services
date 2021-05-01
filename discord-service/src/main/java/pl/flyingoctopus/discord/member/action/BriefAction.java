@@ -13,6 +13,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -42,12 +43,12 @@ public class BriefAction implements DiscordAction {
 
         return Mono.just(messageArguments.getMessage().getAuthor().get().getId().asString())
                 .flatMap(memberRepository::findByDiscordId)
-                .flatMap(member -> trelloMockService.addCommentToCard(member.getTrelloReportCardId(), messageArguments.getArguments().get(0)))
-                .filter(tempFlag -> tempFlag)
-                .flatMap(response -> messageArguments
+                .flatMap(member -> trelloMockService.addCommentToCard(member.getTrelloReportCardId(), messageArguments.getArguments().stream().collect(Collectors.joining(" "))))
+                .filter(httpStatus -> httpStatus.value() == 200)
+                .flatMap(httpStatus -> messageArguments
                     .getMessage()
                     .getChannel()
-                    .flatMap(channel -> channel.createMessage(response.toString())))
+                    .flatMap(channel -> channel.createMessage("Response: "+httpStatus.toString())))
                 .switchIfEmpty(helpAction.sendHelpMessage(messageArguments))
                 .then();
     }
