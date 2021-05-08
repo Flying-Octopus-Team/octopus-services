@@ -21,6 +21,7 @@ discord:
 
 trello:
   token: foo
+  key: foo
 
 spring:
   r2dbc:

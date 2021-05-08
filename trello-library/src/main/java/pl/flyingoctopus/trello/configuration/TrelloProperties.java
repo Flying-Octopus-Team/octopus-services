@@ -12,4 +12,8 @@ public class TrelloProperties {
      */
     private String token;
 
+    /**
+     * Access trello key
+     */
+    private String key;
 }
