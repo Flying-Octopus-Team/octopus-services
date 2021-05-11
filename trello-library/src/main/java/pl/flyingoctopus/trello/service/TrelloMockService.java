@@ -15,8 +15,6 @@ public class TrelloMockService implements TrelloService {
     private final TrelloProperties trelloProperties;
 
     private final WebClient webClient = WebClient.builder().baseUrl("https://api.trello.com/1").build();
-    private final String key = trelloProperties.getKey();
-    private final String token = trelloProperties.getToken();
 
     @Override
     public Mono<HttpStatus> addCommentToCard(String cardId, String comment) {
@@ -30,6 +28,8 @@ public class TrelloMockService implements TrelloService {
     }
 
     String getAddCommentToCardUri(String cardId, String comment) {
+        String key = trelloProperties.getKey();
+        String token = trelloProperties.getToken();
         return String.format("/cards/%s/actions/comments?key=%s&token=%s&text=%s", cardId, key, token, comment);
     }
 
