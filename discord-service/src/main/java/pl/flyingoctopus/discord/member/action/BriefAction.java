@@ -1,18 +1,18 @@
 package pl.flyingoctopus.discord.member.action;
 
-import discord4j.core.object.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import pl.flyingoctopus.discord.action.DiscordAction;
 import pl.flyingoctopus.discord.action.help.DefaultHelpAction;
 import pl.flyingoctopus.discord.arguments.MessageArguments;
-import pl.flyingoctopus.discord.member.model.Member;
 import pl.flyingoctopus.discord.member.repository.MemberRepository;
+import pl.flyingoctopus.discord.member.model.Member;
 import pl.flyingoctopus.trello.service.TrelloMockService;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -33,6 +33,10 @@ public class BriefAction implements DiscordAction {
                 .orElse(false);
     }
 
+    private Mono<HttpStatus> sendCommentToTrello(Member member, MessageArguments messageArguments) {
+        return trelloMockService.addCommentToCard(member.getTrelloReportCardId(), messageArguments.getArguments().stream().collect(Collectors.joining(" ")));
+    }
+
     @Override
     public Mono<Void> run(MessageArguments messageArguments) {
         removeFirstArgument(messageArguments);
@@ -42,12 +46,12 @@ public class BriefAction implements DiscordAction {
 
         return Mono.just(messageArguments.getMessage().getAuthor().get().getId().asString())
                 .flatMap(memberRepository::findByDiscordId)
-                .flatMap(member -> trelloMockService.addCommentToCard(member.getTrelloReportCardId(), messageArguments.getArguments().get(0)))
-                .filter(tempFlag -> tempFlag)
-                .flatMap(response -> messageArguments
+                .flatMap(member -> sendCommentToTrello(member, messageArguments))
+                .filter(httpStatus -> HttpStatus.OK.equals(httpStatus))
+                .flatMap(httpStatus -> messageArguments
                     .getMessage()
                     .getChannel()
-                    .flatMap(channel -> channel.createMessage(response.toString())))
+                    .flatMap(channel -> channel.createMessage("Komentarz został pomyślnie dodany")))
                 .switchIfEmpty(helpAction.sendHelpMessage(messageArguments))
                 .then();
     }
