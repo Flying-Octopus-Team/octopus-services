@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'groovy'
+apply plugin: 'io.freefair.lombok'
 
 repositories {
     mavenCentral()
