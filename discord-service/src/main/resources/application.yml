@@ -12,7 +12,7 @@ discord:
     - alias: Wiki
       url: https://wiki.flyingoctopus.pl/bin/view/Main/
     - alias: Asterielle
-      url: http://elf-vs-dwarves.pl/
+      url: https://elf-vs-dwarves.pl/
     - alias: Discord
       url: https://discord.com/invite/Q2DuSNY
   admins:
@@ -20,8 +20,8 @@ discord:
 
 
 trello:
-  token: foo
-  key: foo
+  key: 442b5c2d6c03b33ccbcc6b3b0e4a7875
+  token: TRELLO_BOT_TOKEN
 
 spring:
   r2dbc:

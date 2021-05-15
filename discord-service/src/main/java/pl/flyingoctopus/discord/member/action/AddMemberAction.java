@@ -20,7 +20,7 @@ import pl.flyingoctopus.discord.configure.service.ConfigurationService;
 import pl.flyingoctopus.discord.member.AddArguments;
 import pl.flyingoctopus.discord.member.model.Member;
 import pl.flyingoctopus.discord.member.repository.MemberRepository;
-import pl.flyingoctopus.trello.service.TrelloMockService;
+import pl.flyingoctopus.trello.service.impl.TrelloServiceImpl;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -75,7 +75,7 @@ public class AddMemberAction implements DiscordAction {
     private final MemberRepository memberRepository;
     private final ConfigurationService configurationService;
 
-    private final TrelloMockService trelloMockService;
+    private final TrelloServiceImpl trelloServiceImpl;
 
     @Override
     public boolean isMatching(MessageArguments messageArguments) {
