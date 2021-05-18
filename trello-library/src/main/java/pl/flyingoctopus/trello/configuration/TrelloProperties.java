@@ -18,5 +18,8 @@ public class TrelloProperties {
      */
     private String token;
 
-
+    /**
+     * Access id of FO workspace
+     */
+    private String workspaceId;
 }

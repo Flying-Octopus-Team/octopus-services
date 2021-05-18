@@ -22,6 +22,7 @@ discord:
 trello:
   key: 442b5c2d6c03b33ccbcc6b3b0e4a7875
   token: TRELLO_BOT_TOKEN
+  workspaceId: WORK_SPACE_ID
 
 spring:
   r2dbc:

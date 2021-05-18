@@ -33,4 +33,21 @@ public class TrelloServiceImpl implements TrelloService {
         return String.format("/cards/%s/actions/comments?key=%s&token=%s&text=%s", cardId, key, token, comment);
     }
 
+    @Override
+    public Mono<HttpStatus> inviteToWorkspace(String email, String name) {
+        return webClient.put()
+                .uri(getInviteToWorkspaceUri(email, name))
+                .retrieve()
+                .toBodilessEntity()
+                .map(ResponseEntity::getStatusCode)
+                .onErrorResume(WebClientResponseException.class, ex -> Mono.just(ex.getStatusCode()));
+    }
+
+    private String getInviteToWorkspaceUri(String email, String name) {
+        String key = trelloProperties.getKey();
+        String token = trelloProperties.getToken();
+        String workspaceId = trelloProperties.getWorkspaceId();
+        return String.format("/organizations/%s/members?key=%s&token=%s&email=%s&fullName=%s", workspaceId, key, token, email, name);
+    }
+
 }
