@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'groovy'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.freefair.lombok'
 
 repositories {
     mavenCentral()
@@ -17,10 +18,11 @@ dependencyManagement {
     }
 }
 
-sourceCompatibility = '15'
+sourceCompatibility = '16'
 
 ext {
     projectName = "$project.name"
+    lombokVersion = "1.18.20"
 }
 
 dependencies {
@@ -48,10 +50,10 @@ dependencies {
     testRuntimeOnly "org.objenesis:objenesis:3.1"
 
     // lombok
-    compileOnly('org.projectlombok:lombok')
-    annotationProcessor('org.projectlombok:lombok')
-    testCompileOnly('org.projectlombok:lombok')
-    testAnnotationProcessor('org.projectlombok:lombok')
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 
     // discord
     implementation('com.discord4j:discord4j-core:3.1.3')

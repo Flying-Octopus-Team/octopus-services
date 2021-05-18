@@ -10,3 +10,9 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
+
+
+plugins {
+    id "io.freefair.lombok" version "6.0.0-m2" apply false
+}
+
