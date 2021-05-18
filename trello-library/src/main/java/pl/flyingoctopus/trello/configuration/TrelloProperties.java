@@ -8,12 +8,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class TrelloProperties {
 
     /**
+     * Access trello key
+     * https://trello.com/app-key/
+     */
+    private String key;
+
+    /**
      * Access trello token
      */
     private String token;
 
-    /**
-     * Access trello key
-     */
-    private String key;
+
 }
