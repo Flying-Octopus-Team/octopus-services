@@ -7,4 +7,6 @@ public interface TrelloService {
 
     Mono<HttpStatus> addCommentToCard(String cardId, String brief);
 
+    Mono<String> getCommentsFromCard(String cardId);
+
 }
