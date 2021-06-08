@@ -13,6 +13,11 @@ import pl.flyingoctopus.trello.service.impl.trellocomment.TrelloComment;
 import pl.flyingoctopus.trello.service.impl.trellocomment.TrelloCommentData;
 import reactor.core.publisher.Mono;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Component
 @RequiredArgsConstructor
 public class TrelloServiceImpl implements TrelloService {
@@ -43,6 +48,7 @@ public class TrelloServiceImpl implements TrelloService {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToFlux(TrelloComment.class)
+                .filter(this::filterCommentsByDate)
                 .map(TrelloComment::getData)
                 .map(TrelloCommentData::getText)
                 .reduce((value, next) -> value+'\n'+next)
@@ -54,6 +60,33 @@ public class TrelloServiceImpl implements TrelloService {
         String key = trelloProperties.getKey();
         String token = trelloProperties.getToken();
         return String.format("/cards/%s/actions?key=%s&token=%s&filter=commentCard", cardId, key, token);
+    }
+
+    private boolean filterCommentsByDate(TrelloComment trelloComment) {
+        Date previousDate = getPreviousWeekDate();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        boolean result;
+
+        try {
+            result = previousDate.before(simpleDateFormat.parse(trelloComment.getDate()));
+        } catch (ParseException e) {
+            result = false;
+        }
+
+        return result;
+    }
+
+    private Date getPreviousWeekDate() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date result;
+        try {
+            result = simpleDateFormat.parse(LocalDateTime.now().minusDays(7).toString());
+        } catch (ParseException e) {
+            result = new Date();
+        }
+
+        return result;
     }
 
 }
