@@ -1,6 +1,5 @@
 package pl.flyingoctopus.trello.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -11,11 +10,15 @@ import pl.flyingoctopus.trello.service.TrelloService;
 import reactor.core.publisher.Mono;
 
 @Component
-@RequiredArgsConstructor
 public class TrelloServiceImpl implements TrelloService {
 
     private final TrelloProperties trelloProperties;
-    private final WebClient webClient = WebClient.builder().baseUrl("https://api.trello.com/1").build();
+    private final WebClient webClient;
+
+    public TrelloServiceImpl(TrelloProperties trelloProperties, WebClient.Builder webClientBuilder) {
+        this.trelloProperties = trelloProperties;
+        this.webClient = webClientBuilder.build();
+    }
 
     @Override
     public Mono<HttpStatus> addCommentToCard(String cardId, String comment) {

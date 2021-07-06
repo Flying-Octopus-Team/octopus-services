@@ -5,11 +5,13 @@ import discord4j.core.object.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 import pl.flyingoctopus.discord.action.DiscordAction;
 import pl.flyingoctopus.discord.action.help.DefaultHelpAction;
 import pl.flyingoctopus.discord.arguments.MessageArguments;
 import pl.flyingoctopus.discord.member.model.Member;
 import pl.flyingoctopus.discord.member.repository.MemberRepository;
+import pl.flyingoctopus.trello.configuration.TrelloProperties;
 import pl.flyingoctopus.trello.service.impl.TrelloServiceImpl;
 import reactor.core.publisher.Mono;
 
@@ -22,7 +24,10 @@ public class BriefAction implements DiscordAction {
 
     private final DefaultHelpAction helpAction = new DefaultHelpAction("  usage: !fo member brief <brief-report-content>");
     private final MemberRepository memberRepository;
-    private final TrelloServiceImpl trelloServiceImpl;
+
+    private final TrelloProperties trelloProperties;
+    private final WebClient.Builder webClientBuilder = WebClient.builder().baseUrl("https://api.trello.com/1");
+    private TrelloServiceImpl trelloServiceImpl;
 
     @Override
     public boolean isMatching(MessageArguments messageArguments) {
@@ -57,6 +62,8 @@ public class BriefAction implements DiscordAction {
     }
 
     private Mono<HttpStatus> sendCommentToTrelloCard(Member member, MessageArguments messageArguments) {
+        trelloServiceImpl = new TrelloServiceImpl(trelloProperties, webClientBuilder);
+
         return trelloServiceImpl.addCommentToCard(member.getTrelloReportCardId(), String.join(" ", messageArguments.getArguments()));
     }
 }
