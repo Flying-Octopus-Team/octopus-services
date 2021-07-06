@@ -7,4 +7,5 @@ public interface TrelloService {
 
     Mono<HttpStatus> addCommentToCard(String cardId, String brief);
 
+    Mono<HttpStatus> inviteToWorkspace(String email, String name);
 }
